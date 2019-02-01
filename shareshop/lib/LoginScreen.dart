@@ -16,6 +16,29 @@ class _MyLoginPageState extends State<LoginScreen> {
   final logincontroller = TextEditingController();
   final passwrdcontroller = TextEditingController();
 
+  void _showDialog() {
+    // flutter defined function
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        // return object of type Dialog
+        return AlertDialog(
+          title: new Text("Alert Dialog title"),
+          content: new Text("Alert Dialog body"),
+          actions: <Widget>[
+            // usually buttons at the bottom of the dialog
+            new FlatButton(
+              child: new Text("Close"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   void logmein() async {
     var client = new http.Client();
 
@@ -24,7 +47,7 @@ class _MyLoginPageState extends State<LoginScreen> {
             logincontroller.text +
             '&msg=' +
             passwrdcontroller.text);
-            
+
     if (thedata.statusCode == 200) {
       debugPrint(thedata.body);
 
@@ -32,17 +55,17 @@ class _MyLoginPageState extends State<LoginScreen> {
         debugPrint("drinne");
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => LogedinArea()),
+          MaterialPageRoute(
+              builder: (context) =>
+                  LogedinArea(username: logincontroller.text)),
         );
       } else {
         debugPrint("nicht drinne");
-        Scaffold.of(context).showSnackBar(new SnackBar(
-          content: new Text("Wrong Username or Password"),
-        ));
+        _showDialog();
       }
-    }
-    else{
+    } else {
       debugPrint("Http Fehler");
+      _showDialog();
     }
   }
 
