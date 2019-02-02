@@ -22,6 +22,7 @@ class _MyLogedinPageState extends State<LogedinArea> {
   }
 
   String shoplist = "";
+  List shoppingliste;
   List<dynamic> shopliste;
   void getshoplist() async {
     var client = new http.Client();
@@ -29,50 +30,27 @@ class _MyLogedinPageState extends State<LogedinArea> {
         'http://7nxhxgbamxfrbb4f.myfritz.net:9999/?msg=getliste&msg=' +
             username);
     debugPrint(thedata.body);
-
-    
-    // debugPrint(shopliste[1].toString());
-    // debugPrint(shopliste[2].toString());
-    setState(() => shopliste = jsonDecode(thedata.body));
-    setState(() => shoplist = shopliste.toString());
-    debugPrint(shopliste[0].toString());
+    setState(() => shoplist = thedata.body);
+    setState(() => shoppingliste = shoplist.split('|'));
+    debugPrint(shoppingliste.toString());
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("The DB"),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            Text(
-              username,
-              style: TextStyle(fontSize: 24),
-            ),
-            Text(
-              shoplist,
-              style: TextStyle(fontSize: 24),
-            ),
-            new RaisedButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: Text("Go Back!"),
-            ),
-            ListView.builder(
-              itemCount: shopliste.length,
-              itemBuilder: (context, index) {
-                return ListTile(
-                  title: Text('${shopliste[index]}'),
-                );
-              },
-            ),
-          ],
+        appBar: AppBar(
+          title: Text("The DB"),
         ),
-      ),
-    );
+        body: ListView.separated(
+          separatorBuilder: (context, index) => Divider(
+                color: Colors.grey,
+              ),
+          itemCount: shoppingliste.length,
+          itemBuilder: (context, index) {
+            return ListTile(
+              title: Text('${shoppingliste[index]}'),
+            );
+          },
+        ));
   }
 }

@@ -51,7 +51,7 @@ class _MyLoginPageState extends State<LoginScreen> {
     if (thedata.statusCode == 200) {
       debugPrint(thedata.body);
 
-      if (thedata.body == '"Login successfull"') {
+      if (thedata.body == 'Login successfull') {
         debugPrint("drinne");
         Navigator.push(
           context,
