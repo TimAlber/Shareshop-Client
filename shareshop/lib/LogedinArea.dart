@@ -22,18 +22,20 @@ class _MyLogedinPageState extends State<LogedinArea> {
   }
 
   String shoplist = "";
+  List<dynamic> shopliste;
   void getshoplist() async {
     var client = new http.Client();
     final thedata = await client.get(
         'http://7nxhxgbamxfrbb4f.myfritz.net:9999/?msg=getliste&msg=' +
             username);
     debugPrint(thedata.body);
-    List<dynamic> shopliste = jsonDecode(thedata.body);
-    setState(() => shoplist = shopliste.toString());
-  }
 
-  Widget getTextWidgets(List<String> strings) {
-    return new Row(children: strings.map((item) => new Text(item)).toList());
+    
+    // debugPrint(shopliste[1].toString());
+    // debugPrint(shopliste[2].toString());
+    setState(() => shopliste = jsonDecode(thedata.body));
+    setState(() => shoplist = shopliste.toString());
+    debugPrint(shopliste[0].toString());
   }
 
   @override
@@ -54,12 +56,19 @@ class _MyLogedinPageState extends State<LogedinArea> {
               shoplist,
               style: TextStyle(fontSize: 24),
             ),
-            getTextWidgets(users)
             new RaisedButton(
               onPressed: () {
                 Navigator.pop(context);
               },
               child: Text("Go Back!"),
+            ),
+            ListView.builder(
+              itemCount: shopliste.length,
+              itemBuilder: (context, index) {
+                return ListTile(
+                  title: Text('${shopliste[index]}'),
+                );
+              },
             ),
           ],
         ),
