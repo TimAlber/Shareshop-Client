@@ -16,15 +16,15 @@ class _MyLoginPageState extends State<LoginScreen> {
   final logincontroller = TextEditingController();
   final passwrdcontroller = TextEditingController();
 
-  void _showDialog() {
+  void _showDialog(String content) {
     // flutter defined function
     showDialog(
       context: context,
       builder: (BuildContext context) {
         // return object of type Dialog
         return AlertDialog(
-          title: new Text("Alert Dialog title"),
-          content: new Text("Alert Dialog body"),
+          title: new Text("Login Error"),
+          content: new Text(content),
           actions: <Widget>[
             // usually buttons at the bottom of the dialog
             new FlatButton(
@@ -61,11 +61,11 @@ class _MyLoginPageState extends State<LoginScreen> {
         );
       } else {
         debugPrint("nicht drinne");
-        _showDialog();
+        _showDialog("Benutzername oder Passwort falsch.");
       }
     } else {
       debugPrint("Http Fehler");
-      _showDialog();
+      _showDialog("Internet oder Server Problem");
     }
   }
 

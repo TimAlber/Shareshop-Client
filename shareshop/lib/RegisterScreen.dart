@@ -13,6 +13,64 @@ class RegisterSceen extends StatefulWidget {
 }
 
 class _MyRegisterPageState extends State<RegisterSceen> {
+  final logincontroller = TextEditingController();
+  final addrescontroller = TextEditingController();
+  final passwrdcontroller = TextEditingController();
+
+  void _showDialog(String content) {
+  // flutter defined function
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      // return object of type Dialog
+      return AlertDialog(
+        title: new Text("Registration Error"),
+        content: new Text(content),
+        actions: <Widget>[
+          // usually buttons at the bottom of the dialog
+          new FlatButton(
+            child: new Text("Close"),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
+        ],
+      );
+    },
+  );
+}
+
+
+  void regmein() async {
+    var client = new http.Client();
+
+    final thedata = await client.get(
+        'http://7nxhxgbamxfrbb4f.myfritz.net:9999/?msg=login&msg=' +
+            logincontroller.text +
+            '&msg=' +
+            passwrdcontroller.text);
+
+    if (thedata.statusCode == 200) {
+      debugPrint(thedata.body);
+
+      if (thedata.body == 'Login successfull') {
+        debugPrint("drinne");
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) =>
+                  LogedinArea(username: logincontroller.text)),
+        );
+      } else {
+        debugPrint("nicht drinne");
+        _showDialog("Benutzername oder Passwort falsch.");
+      }
+    } else {
+      debugPrint("Http Fehler");
+      _showDialog("Internet oder Server Problem");
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -24,14 +82,17 @@ class _MyRegisterPageState extends State<RegisterSceen> {
         child: Column(
           children: [
             new TextField(
+              controller: logincontroller,
               decoration: InputDecoration(
                   border: InputBorder.none, hintText: 'Enter Username'),
             ),
             new TextField(
+              controller: addrescontroller,
               decoration: InputDecoration(
                   border: InputBorder.none, hintText: 'Enter Adress'),
             ),
             new TextField(
+              controller: passwrdcontroller,
               decoration: InputDecoration(
                   border: InputBorder.none, hintText: 'Enter Password'),
             ),
