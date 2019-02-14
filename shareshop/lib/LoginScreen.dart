@@ -42,14 +42,12 @@ class _MyLoginPageState extends State<LoginScreen> {
   void logmein() async {
     var client = new http.Client();
 
+    try{
     final thedata = await client.get(
         'http://7nxhxgbamxfrbb4f.myfritz.net:9999/?msg=login&msg=' +
             logincontroller.text +
             '&msg=' +
             passwrdcontroller.text);
-
-    if (thedata.statusCode == 200) {
-      debugPrint(thedata.body);
 
       if (thedata.body == 'Login successfull') {
         debugPrint("drinne");
@@ -62,12 +60,12 @@ class _MyLoginPageState extends State<LoginScreen> {
       } else {
         debugPrint("nicht drinne");
         _showDialog("Benutzername oder Passwort falsch.");
-      }
-    } else {
+      }}
+      catch(e){
       debugPrint("Http Fehler");
       _showDialog("Internet oder Server Problem");
+      }
     }
-  }
 
   @override
   Widget build(BuildContext context) {

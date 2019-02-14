@@ -18,54 +18,50 @@ class _MyRegisterPageState extends State<RegisterSceen> {
   final passwrdcontroller = TextEditingController();
 
   void _showDialog(String content) {
-  // flutter defined function
-  showDialog(
-    context: context,
-    builder: (BuildContext context) {
-      // return object of type Dialog
-      return AlertDialog(
-        title: new Text("Registration Error"),
-        content: new Text(content),
-        actions: <Widget>[
-          // usually buttons at the bottom of the dialog
-          new FlatButton(
-            child: new Text("Close"),
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-          ),
-        ],
-      );
-    },
-  );
-}
-
+    // flutter defined function
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        // return object of type Dialog
+        return AlertDialog(
+          title: new Text("Registration Error"),
+          content: new Text(content),
+          actions: <Widget>[
+            // usually buttons at the bottom of the dialog
+            new FlatButton(
+              child: new Text("Close"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   void regmein() async {
     var client = new http.Client();
 
-    final thedata = await client.get(
-        'http://7nxhxgbamxfrbb4f.myfritz.net:9999/?msg=login&msg=' +
-            logincontroller.text +
-            '&msg=' +
-            passwrdcontroller.text);
+    try {
+      final thedata = await client.get(
+          'http://7nxhxgbamxfrbb4f.myfritz.net:9999/?msg=createuser&msg=' +
+              logincontroller.text +
+              '&msg=' +
+              passwrdcontroller.text +
+              '&msg=' +
+              addrescontroller.text +
+              '&msg=Apfel');
 
-    if (thedata.statusCode == 200) {
-      debugPrint(thedata.body);
-
-      if (thedata.body == 'Login successfull') {
+      if (thedata.body == 'Account created') {
         debugPrint("drinne");
         Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) =>
-                  LogedinArea(username: logincontroller.text)),
-        );
+            context, MaterialPageRoute(builder: (context) => LoginScreen()));
       } else {
         debugPrint("nicht drinne");
-        _showDialog("Benutzername oder Passwort falsch.");
+        _showDialog("Username already exists. Pick another one.");
       }
-    } else {
+    } catch (e) {
       debugPrint("Http Fehler");
       _showDialog("Internet oder Server Problem");
     }
@@ -98,7 +94,7 @@ class _MyRegisterPageState extends State<RegisterSceen> {
             ),
             new RaisedButton(
               onPressed: () {
-                // Navigate back to first route when tapped.
+                regmein();
               },
               child: Text("Register me!"),
             ),

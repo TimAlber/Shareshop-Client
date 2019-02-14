@@ -21,24 +21,52 @@ class _MyLogedinPageState extends State<LogedinArea> {
     WidgetsBinding.instance.addPostFrameCallback((_) => getshoplist());
   }
 
+  void _showDialog(String content) {
+    // flutter defined function
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        // return object of type Dialog
+        return AlertDialog(
+          title: new Text("Registration Error"),
+          content: new Text(content),
+          actions: <Widget>[
+            // usually buttons at the bottom of the dialog
+            new FlatButton(
+              child: new Text("Close"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   String shoplist = "";
   List shoppingliste;
   List<dynamic> shopliste;
   void getshoplist() async {
     var client = new http.Client();
-    final thedata = await client.get(
-        'http://7nxhxgbamxfrbb4f.myfritz.net:9999/?msg=getliste&msg=' +
-            username);
-    debugPrint(thedata.body);
-    setState(() => shoplist = thedata.body);
-    setState(() => shoppingliste = shoplist.split('|'));
-    debugPrint(shoppingliste.toString());
+    try {
+      final thedata = await client.get(
+          'http://7nxhxgbamxfrbb4f.myfritz.net:9999/?msg=getliste&msg=' +
+              username);
+
+      debugPrint(thedata.body);
+      setState(() => shoplist = thedata.body);
+      setState(() => shoppingliste = shoplist.split('|'));
+      debugPrint(shoppingliste.toString());
+    } catch (e) {
+      _showDialog("Internet oder Server Problem");
+    }
   }
 
-    void putshoplist() async {
+  void putshoplist() async {
     String putstr = "";
     for (var i = 0; i < shopliste.length; i++) {
-      putstr = putstr+shopliste[i]+'|';
+      putstr = putstr + shopliste[i] + '|';
     }
     debugPrint(putstr);
   }
@@ -83,8 +111,7 @@ class _MyLogedinPageState extends State<LogedinArea> {
             ),
             FloatingActionButton.extended(
               onPressed: () {
-                  putshoplist();
-
+                putshoplist();
               },
               icon: Icon(Icons.save),
               label: Text("Save"),
